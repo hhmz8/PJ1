@@ -45,6 +45,7 @@ int main(int argc, char** argv) {
 		perror("Error: Failed to open message file");
 		return -1;
 	}
+
 	char* logname = "messages.log";
 	char* msg = "Hello World";
 	int msglen = strlen(msg);
@@ -56,22 +57,12 @@ int main(int argc, char** argv) {
 	}
 	ptr = msg;
 
-	char* line = NULL;
-	size_t len = 0;
-	ssize_t read;
-	while ((read = getline(&line, &len, fileptr)) != -1) {
-		printf("Retrieved line of length %zu:\n", read);
-		printf("%s", line);
-	}
-
 	int bufferLength = 255;
 	char buffer[bufferLength];
 
 	while (fgets(buffer, bufferLength, fileptr)) {
 		printf("%s\n", buffer);
 	}
-	fscanf(fileptr, "%s", buffer);
-	printf("Data from the file:\n%s", buffer);
 
 	printf("Finished loading file.\n");
 

@@ -68,7 +68,7 @@ char* getlog(void) {
 int savelog(char* filename) {
 	log_t* navptr = headptr;
 	FILE* fileptr;
-	fileptr = fopen(filename, "w+");
+	fileptr = fopen(filename, "w");
 
 	if (headptr == NULL) {
 		perror("Error: Failed to parse log");
@@ -83,14 +83,9 @@ int savelog(char* filename) {
 	while (navptr != NULL) {
 		char buffer[20];
 		strftime(buffer, 20, "%H:%M:%S", localtime(&navptr->item.time));
-
-		char* str = malloc(strlen(navptr->item.string) + strlen(buffer) + 1);
-		strcpy(str, navptr->item.string);
-		strcat(str, " ");
-		strcat(str, buffer);
-
-		fputs(str, fileptr);
-		printf("%ss\n", str);
+		fprintf(fileptr, "%s %s\n", navptr->item.string, buffer);
+		fflush(fileptr);
+		printf("%s %s\n", navptr->item.string, buffer);
 		navptr = navptr->next;
 	}
 
