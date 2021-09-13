@@ -85,6 +85,10 @@
   <ItemGroup>
     <None Include="makefile" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="messages.log" />
+    <Text Include="texts.txt" />
+  </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -37,13 +37,16 @@ int main(int argc, char** argv) {
 		temp = 1;
 	}
 
+	char logname[] = "messages.log";
+	char msg[] = "Hello World";
 	int strlen = 11;
 	int sleepTime = 0;
 	char *ptr = NULL;
 	if ((ptr = (char*)malloc(strlen * sizeof(char))) == NULL) {
+		perror("Error: Failed to allocate memory for message");
 		return -1;
 	}
-	ptr = "Hello World";
+	ptr = msg;
 	addmsg('I', ptr);
 	sleep(sleepTime);
 	addmsg('I', ptr);
@@ -51,6 +54,7 @@ int main(int argc, char** argv) {
 	addmsg('I', ptr);
 	sleep(sleepTime);
 	addmsg('I', ptr);
+	savelog(logname);
 	clearlog();
 
 	printf("End of program.");

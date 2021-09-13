@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "log.h"
 
 #ifndef LOG_H
@@ -13,15 +14,16 @@ typedef struct list_struct {
 static log_t* headptr = NULL;
 static log_t* tailptr = NULL;
 
-// Referenced from Program 2.7 in the textbook
+// Reference: Program 2.7 in the textbook
 int addmsg(const char type, const char* msg) {
 	log_t* newnode;
 	int nodesize;
 	nodesize = sizeof(log_t) + strlen(msg) + 1;
 
-	if ((newnode = (log_t*)(malloc(nodesize))) == NULL) /* couldn't add node */
+	if ((newnode = (log_t*)(malloc(nodesize))) == NULL) {
+		perror("Error: Failed to allocate memory for node");
 		return -1;
-
+	}
 	newnode->item.time = time(NULL);
 	newnode->item.string = (char*)newnode + sizeof(log_t);
 	strcpy(newnode->item.string, msg);
@@ -34,14 +36,14 @@ int addmsg(const char type, const char* msg) {
 	tailptr = newnode;
 
 	char buffer[20];
-	strftime(buffer, 20, "%H:%M:%S", localtime(&newnode->item.time)); // Referenced from https://stackoverflow.com/questions/3053999/
+	strftime(buffer, 20, "%H:%M:%S", localtime(&newnode->item.time)); // Reference: https://stackoverflow.com/questions/3053999/
 
 	printf("Message: %s added at %s \n", msg, buffer);
 	return 0;
 }
 
 void clearlog(void) {
-	if (headptr == NULL) {
+	if (headptr == NULL && tailptr == NULL) {
 		printf("Empty log detected.\n");
 	}
 	else {
@@ -63,10 +65,29 @@ char* getlog(void) {
 }
 
 int savelog(char* filename) {
+	log_t* navptr = headptr;
+	FILE* fileptr;
+	fileptr = fopen(filename, "w");
+
 	if (headptr == NULL) {
+		perror("Error: Failed to parse log");
 		return -1;
 	}
-	printf("Log saved.");
+	if (fileptr == NULL) {
+		perror("Error: Failed to create or open log file");
+		return -1;
+	}
+
+	while (navptr->next != NULL) {
+		char buffer[20];
+		strftime(buffer, 20, "%H:%M:%S", localtime(&navptr->item.time));
+		fprintf(fileptr, "%s %s", navptr->item.string, buffer);
+		printf("%s %s\n", navptr->item.string, buffer);
+		navptr = navptr->next;
+	}
+
+	fclose(fileptr);
+	printf("Log saved as %s \n", filename);
 	return 0;
 }
 
