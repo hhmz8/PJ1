@@ -1,0 +1,12 @@
+Hanzhe Huang
+9/13/2021
+Assignment 1
+
+Description:
+This program logs messages from texts.txt, a pre-made text file containing lines of strings, into a log file.
+
+Usage:
+./driver [-h] [-t sec] [logfile]
+
+Files:
+driver.c, log.h, loglib.c, makefile, messages.log, README, texts.txt

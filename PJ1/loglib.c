@@ -20,11 +20,17 @@ int addmsg(const char type, const char* msg) {
 	log_t* newnode;
 	int nodesize;
 	nodesize = sizeof(log_t) + strlen(msg) + 1;
+	char types[] = "iwef";
 
+	if (strchr(types, tolower(type)) == NULL) {
+		perror("Error: Unrecognized message type");
+		return -1;
+	}
 	if ((newnode = (log_t*)(malloc(nodesize))) == NULL) {
 		perror("Error: Failed to allocate memory for node");
 		return -1;
 	}
+
 	newnode->item.time = time(NULL);
 	newnode->item.string = (char*)newnode + sizeof(log_t);
 	strcpy(newnode->item.string, msg);

@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="messages.log" />
+    <Text Include="README" />
     <Text Include="texts.txt">
       <DeploymentContent>false</DeploymentContent>
     </Text>
