@@ -86,7 +86,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="messages.log" />
-    <Text Include="texts.txt" />
+    <Text Include="texts.txt">
+      <DeploymentContent>false</DeploymentContent>
+    </Text>
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

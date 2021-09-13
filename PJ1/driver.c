@@ -6,6 +6,12 @@
 #include <errno.h>
 #include <sys/types.h>
 
+// Reference: https://www.geeksforgeeks.org/generating-random-number-range-c/
+int getRand(int lower, int upper)
+{
+	return (rand() % (upper - lower + 1)) + lower;
+}
+
 int main(int argc, char** argv) {
 
 	int option = 0;
@@ -46,30 +52,24 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	char* logname = "messages.log";
-	char* msg = "Hello World";
-	int msglen = strlen(msg);
-	int sleepTime = 0;
+	char* logname = "messages.log"; // ARG
+	int sleepTime = 1; // ARG
 	char *ptr = NULL;
-	if ((ptr = (char*)malloc(msglen * sizeof(char))) == NULL) {
-		perror("Error: Failed to allocate memory for message");
-		return -1;
-	}
-	ptr = msg;
 
 	int bufferLength = 255;
 	char buffer[bufferLength];
 
 	while (fgets(buffer, bufferLength, fileptr)) {
-		printf("%s\n", buffer);
+		if ((ptr = (char*)malloc(strlen(buffer) * sizeof(buffer))) == NULL) {
+			perror("Error: Failed to allocate memory for message");
+			return -1;
+		}
+		ptr = buffer;
+		addmsg('I', ptr);
+		sleep(getRand(0, 2*sleepTime));
 	}
 
 	printf("Finished loading file.\n");
-
-	addmsg('I', ptr);
-	sleep(sleepTime);
-	addmsg('I', ptr);
-	sleep(sleepTime);
 
 	savelog(logname);
 	clearlog();
