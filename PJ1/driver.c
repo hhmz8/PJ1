@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
-#include <string.h>
 #include <errno.h>
 #include <sys/types.h>
 
@@ -37,12 +36,20 @@ int main(int argc, char** argv) {
 		temp = 1;
 	}
 
+	char filename[] = "texts.txt";
+	FILE* fileptr;
+	fileptr = fopen(filename, "r");
+
+	if (fileptr == NULL) {
+		perror("Error: Failed to open message file");
+		return -1;
+	}
 	char logname[] = "messages.log";
 	char msg[] = "Hello World";
-	int strlen = 11;
+	int msglen = strlen(msg);
 	int sleepTime = 0;
 	char *ptr = NULL;
-	if ((ptr = (char*)malloc(strlen * sizeof(char))) == NULL) {
+	if ((ptr = (char*)malloc(msglen * sizeof(char))) == NULL) {
 		perror("Error: Failed to allocate memory for message");
 		return -1;
 	}
@@ -57,6 +64,7 @@ int main(int argc, char** argv) {
 	savelog(logname);
 	clearlog();
 
+	fclose(fileptr);
 	printf("End of program.");
 	return 0;
 
