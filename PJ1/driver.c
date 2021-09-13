@@ -7,16 +7,17 @@
 #include <sys/types.h>
 
 // Reference: https://www.geeksforgeeks.org/generating-random-number-range-c/
-int getRand(int lower, int upper)
+int getRand(const int lower, const int upper)
 {
 	return (rand() % (upper - lower + 1)) + lower;
 }
 
 int main(int argc, char** argv) {
 
-	int option = 0;
-	static char* logname = "messages.log"; // ARG
-	static int sleepTime = 1; // ARG
+	int option = 0;                         // getopt
+	const char* filename = "texts.txt";     // input messages
+	static char* logname = "messages.log";  // argv
+	static int sleepTime = 1;               // argv
 
 	// Reference: https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html
 	while ((option = getopt(argc, argv, "ht:")) != -1) {
@@ -24,7 +25,7 @@ int main(int argc, char** argv) {
 
 		case 'h':
 			printf("Usage:\n");
-			printf("driver [-h] [-t sec] [logfile]\n");
+			printf("%s [-h] [-t sec] [logfile]\n", argv[0]);
 			printf("-----------------------------------\n");
 			printf("Default: Logs messages to messages.log.\n");
 			printf("[-h]: Prints usage of this program.\n");
@@ -34,20 +35,28 @@ int main(int argc, char** argv) {
 			break;
 
 		case 't':
-			sleepTime = optarg;
+			sleepTime = atoi(optarg);
+			if (sleepTime == NULL || sleepTime > 10 || sleepTime < 0) {
+				perror("Invalid or large sleep duration");
+				return -1;
+			}
 			break;
 
 		case '?':
 			if (optopt == 't')
-				perror("Error: Option requires an argument");
+				perror("Option requires an argument");
 			else if (isprint(optopt))
-				perror("Error: Unknown option");
+				perror("Unknown option");
 			else
-				perror("Error: Unknown option character");
+				perror("Unknown option character");
 			return -1;
 			break;
 		}
 
+	}
+
+	if (optind < argc) {
+		logname = argv[optind];
 	}
 
 	// TODO: Parse filename
@@ -55,12 +64,11 @@ int main(int argc, char** argv) {
 
 
 	// Default
-	char* filename = "texts.txt";
 	FILE* fileptr;
 	fileptr = fopen(filename, "r");
 
 	if (fileptr == NULL) {
-		perror("Error: Failed to open message file");
+		perror("Failed to open message file");
 		return -1;
 	}
 
@@ -70,7 +78,7 @@ int main(int argc, char** argv) {
 
 	while (fgets(buffer, bufferLength, fileptr)) {
 		if ((ptr = (char*)malloc(strlen(buffer) * sizeof(buffer))) == NULL) {
-			perror("Error: Failed to allocate memory for message");
+			perror("Failed to allocate memory for message");
 			return -1;
 		}
 		ptr = buffer;
@@ -84,7 +92,7 @@ int main(int argc, char** argv) {
 	clearlog();
 
 	fclose(fileptr);
-	printf("End of program.");
+	printf("End of program.\n");
 	return 0;
 
 }
