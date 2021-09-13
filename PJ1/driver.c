@@ -24,13 +24,15 @@ int main(int argc, char** argv) {
 		switch (option) {
 
 		case 'h':
+			printf("-----------------------------------\n");
 			printf("Usage:\n");
 			printf("%s [-h] [-t sec] [logfile]\n", argv[0]);
 			printf("-----------------------------------\n");
-			printf("Default: Logs messages to messages.log.\n");
+			printf("Default: Logs messages to a new or existing messages.log file.\n");
 			printf("[-h]: Prints usage of this program.\n");
 			printf("[-t sec]: Logs messages on an average of <sec> seconds.\n");
 			printf("[logfile]: Logs messages to the specified <logfile>.\n");
+			printf("-----------------------------------\n");
 			return 0;
 			break;
 
