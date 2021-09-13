@@ -75,15 +75,15 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Desktop\delmar\loglib.c" />
-    <ClCompile Include="..\..\..\..\Desktop\delmar\main.c" />
+    <ClCompile Include="driver.c" />
+    <ClCompile Include="loglib.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Desktop\delmar\log.h" />
-    <ClInclude Include="..\..\..\..\Desktop\delmar\main.h" />
+    <ClInclude Include="driver.h" />
+    <ClInclude Include="log.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\Desktop\delmar\makefile" />
+    <None Include="makefile" />
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
