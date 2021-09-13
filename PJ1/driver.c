@@ -15,34 +15,46 @@ int getRand(int lower, int upper)
 int main(int argc, char** argv) {
 
 	int option = 0;
-	int temp = 1;
-	while ((option = getopt(argc, argv, ":th")) != -1) {
-		switch (option) {
+	static char* logname = "messages.log"; // ARG
+	static int sleepTime = 1; // ARG
 
-		case 't':
-			printf("No errors detected!");
-			temp = 0;
-			break;
+	// Reference: https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html
+	while ((option = getopt(argc, argv, "ht:")) != -1) {
+		switch (option) {
 
 		case 'h':
 			printf("Usage:\n");
 			printf("driver [-h] [-t sec] [logfile]\n");
-			temp = 0;
+			printf("-----------------------------------\n");
+			printf("Default: Logs messages to messages.log.\n");
+			printf("[-h]: Prints usage of this program.\n");
+			printf("[-t sec]: Logs messages on an average of <sec> seconds.\n");
+			printf("[logfile]: Logs messages to the specified <logfile>.\n");
+			return 0;
 			break;
 
-		case ':':
+		case 't':
+			sleepTime = optarg;
 			break;
 
 		case '?':
+			if (optopt == 't')
+				perror("Error: Option requires an argument");
+			else if (isprint(optopt))
+				perror("Error: Unknown option");
+			else
+				perror("Error: Unknown option character");
+			return -1;
 			break;
 		}
 
 	}
 
-	if (temp == 1) {
-		temp = 1;
-	}
+	// TODO: Parse filename
+	// TODO: Remove newline char
 
+
+	// Default
 	char* filename = "texts.txt";
 	FILE* fileptr;
 	fileptr = fopen(filename, "r");
@@ -52,10 +64,7 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	char* logname = "messages.log"; // ARG
-	int sleepTime = 1; // ARG
 	char *ptr = NULL;
-
 	int bufferLength = 255;
 	char buffer[bufferLength];
 

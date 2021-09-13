@@ -14,7 +14,8 @@ typedef struct list_struct {
 static log_t* headptr = NULL;
 static log_t* tailptr = NULL;
 
-// Reference: Program 2.7 in the textbook
+// Reference: Program 2.7 in the textbook by Robbins & Robbins
+// Adds a message to the virtual log
 int addmsg(const char type, const char* msg) {
 	log_t* newnode;
 	int nodesize;
@@ -35,13 +36,14 @@ int addmsg(const char type, const char* msg) {
 		tailptr->next = newnode;
 	tailptr = newnode;
 
-	char buffer[20];
-	strftime(buffer, 20, "%H:%M:%S", localtime(&newnode->item.time)); // Reference: https://stackoverflow.com/questions/3053999/
+	char buffer[40];
+	strftime(buffer, 40, "%H:%M:%S", localtime(&newnode->item.time)); // Reference: https://stackoverflow.com/questions/3053999/
 
 	printf("Message: %s added at %s \n", msg, buffer);
 	return 0;
 }
 
+// Resets the virtual log, requires a savelog() to empty the physical log file
 void clearlog(void) {
 	if (headptr == NULL && tailptr == NULL) {
 		printf("Empty log detected.\n");
@@ -65,6 +67,7 @@ char* getlog(void) {
 	return NULL;
 }
 
+// Writes the virtual log into a file
 int savelog(char* filename) {
 	log_t* navptr = headptr;
 	FILE* fileptr;
@@ -79,12 +82,10 @@ int savelog(char* filename) {
 		return -1;
 	}
 
-	setvbuf(fileptr, NULL, _IONBF, 0);
 	while (navptr != NULL) {
-		char buffer[20];
-		strftime(buffer, 20, "%H:%M:%S", localtime(&navptr->item.time));
-		fprintf(fileptr, "%s %s\n", navptr->item.string, buffer);
-		fflush(fileptr);
+		char buffer[40];
+		strftime(buffer, 40, "%H:%M:%S", localtime(&navptr->item.time));
+		fprintf(fileptr, "%s%s%s\n", navptr->item.string, " ", buffer);
 		printf("%s %s\n", navptr->item.string, buffer);
 		navptr = navptr->next;
 	}
