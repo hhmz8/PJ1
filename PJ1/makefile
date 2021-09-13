@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall
-DEPS = log.h loglib.c driver.h driver.c
+DEPS = log.h loglib.c driver.c
 OBJ = loglib.o driver.o
 
 %.o: %.c $(DEPS)

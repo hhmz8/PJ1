@@ -79,7 +79,6 @@
     <ClCompile Include="loglib.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="driver.h" />
     <ClInclude Include="log.h" />
   </ItemGroup>
   <ItemGroup>
