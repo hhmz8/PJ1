@@ -49,7 +49,7 @@ int addmsg(const char type, const char* msg) {
 	return 0;
 }
 
-// Resets the virtual log, requires a savelog() to empty the physical log file
+// Resets the virtual log
 void clearlog(void) {
 	if (headptr == NULL && tailptr == NULL) {
 		printf("Empty log detected.\n");
@@ -80,19 +80,19 @@ int savelog(char* filename) {
 	fileptr = fopen(filename, "w");
 
 	if (headptr == NULL) {
-		perror("Error: Failed to parse log");
+		perror("Error: Failed to parse log or log is empty");
 		return -1;
 	}
 	if (fileptr == NULL) {
 		perror("Error: Failed to create or open log file");
 		return -1;
 	}
-
+	// TODO: Type checking
 	while (navptr != NULL) {
 		char buffer[40];
 		strftime(buffer, 40, "%H:%M:%S", localtime(&navptr->item.time));
-		fprintf(fileptr, "%s%s%s\n", navptr->item.string, " ", buffer);
-		printf("%s %s\n", navptr->item.string, buffer);
+		fprintf(fileptr, "%s%s%s\n", buffer, " ", navptr->item.string);
+		printf("%s%s%s\n", buffer, " ", navptr->item.string);
 		navptr = navptr->next;
 	}
 
