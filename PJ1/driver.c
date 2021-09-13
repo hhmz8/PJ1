@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 		temp = 1;
 	}
 
-	char filename[] = "texts.txt";
+	char* filename = "texts.txt";
 	FILE* fileptr;
 	fileptr = fopen(filename, "r");
 
@@ -44,8 +44,8 @@ int main(int argc, char** argv) {
 		perror("Error: Failed to open message file");
 		return -1;
 	}
-	char logname[] = "messages.log";
-	char msg[] = "Hello World";
+	char* logname = "messages.log";
+	char* msg = "Hello World";
 	int msglen = strlen(msg);
 	int sleepTime = 0;
 	char *ptr = NULL;
@@ -54,15 +54,20 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 	ptr = msg;
+
+	char* line = NULL;
+	size_t len = 0;
+	ssize_t read;
+	while ((read = getline(&line, &len, fileptr)) != -1) {
+		printf("Retrieved line of length %zu:\n", read);
+		printf("%s", line);
+	}
+	printf("Finished loading file.\n");
+
 	addmsg('I', ptr);
 	sleep(sleepTime);
 	addmsg('I', ptr);
 	sleep(sleepTime);
-	addmsg('I', ptr);
-	sleep(sleepTime);
-	addmsg('I', ptr);
-	savelog(logname);
-	clearlog();
 
 	fclose(fileptr);
 	printf("End of program.");
