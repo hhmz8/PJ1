@@ -48,11 +48,12 @@ void clearlog(void) {
 	}
 	else {
 		tailptr = headptr;
-		while (tailptr->next != NULL && tailptr != NULL) {
+		while (tailptr != NULL) {
 			headptr = tailptr->next;
 			tailptr = tailptr->next;
 			free(headptr);
 		}
+		free(tailptr);
 		headptr = NULL;
 		tailptr = NULL;
 		printf("Log cleared.\n");
@@ -67,7 +68,7 @@ char* getlog(void) {
 int savelog(char* filename) {
 	log_t* navptr = headptr;
 	FILE* fileptr;
-	fileptr = fopen(filename, "w");
+	fileptr = fopen(filename, "w+");
 
 	if (headptr == NULL) {
 		perror("Error: Failed to parse log");
@@ -78,11 +79,18 @@ int savelog(char* filename) {
 		return -1;
 	}
 
-	while (navptr->next != NULL) {
+	setvbuf(fileptr, NULL, _IONBF, 0);
+	while (navptr != NULL) {
 		char buffer[20];
 		strftime(buffer, 20, "%H:%M:%S", localtime(&navptr->item.time));
-		fprintf(fileptr, "%s %s", navptr->item.string, buffer);
-		printf("%s %s\n", navptr->item.string, buffer);
+
+		char* str = malloc(strlen(navptr->item.string) + strlen(buffer) + 1);
+		strcpy(str, navptr->item.string);
+		strcat(str, " ");
+		strcat(str, buffer);
+
+		fputs(str, fileptr);
+		printf("%ss\n", str);
 		navptr = navptr->next;
 	}
 

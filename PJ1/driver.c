@@ -1,6 +1,7 @@
 ﻿#include "log.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <getopt.h>
 #include <errno.h>
 #include <sys/types.h>
@@ -62,12 +63,25 @@ int main(int argc, char** argv) {
 		printf("Retrieved line of length %zu:\n", read);
 		printf("%s", line);
 	}
+
+	int bufferLength = 255;
+	char buffer[bufferLength];
+
+	while (fgets(buffer, bufferLength, fileptr)) {
+		printf("%s\n", buffer);
+	}
+	fscanf(fileptr, "%s", buffer);
+	printf("Data from the file:\n%s", buffer);
+
 	printf("Finished loading file.\n");
 
 	addmsg('I', ptr);
 	sleep(sleepTime);
 	addmsg('I', ptr);
 	sleep(sleepTime);
+
+	savelog(logname);
+	clearlog();
 
 	fclose(fileptr);
 	printf("End of program.");
