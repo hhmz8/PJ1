@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
 		sleep(getRand(0, 2*sleepTime));
 	}
 
-	printf("Finished loading input file.\n");
+	printf("Finished loading input file %s\n", filename);
 
 	// Saves log into file
 	savelog(logname);
