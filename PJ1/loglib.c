@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 #include "log.h"
 
 #ifndef LOG_H
@@ -13,6 +14,7 @@ typedef struct list_struct {
 
 static log_t* headptr = NULL;
 static log_t* tailptr = NULL;
+extern int errno;
 
 // Returns one of the four types based on the char
 char* getTypeString(const char type) {
@@ -31,7 +33,7 @@ char* getTypeString(const char type) {
 		break;
 	case '?':
 		perror("Error: Unrecognized message type");
-		addmsg('F', "Unrecognized message type");
+		addmsg('F', strerror(errno));
 		exit(-1);
 		break;
 	}
@@ -47,8 +49,7 @@ int addmsg(const char type, const char* msg) {
 
 	if ((newnode = (log_t*)(malloc(nodesize))) == NULL) {
 		perror("Error: Failed to allocate memory for node");
-		addmsg('F', "Failed to allocate memory for node");
-		return -1;
+		exit(-1);
 	}
 
 	newnode->item.time = time(NULL);
@@ -92,7 +93,7 @@ char* getlog(void) {
 
 	if (headptr == NULL) {
 		perror("Error: Failed to parse log or log is empty");
-		addmsg('F', "Failed to parse log or log is empty");
+		addmsg('F', strerror(errno));
 		exit(-1);
 	}
 
@@ -105,7 +106,7 @@ char* getlog(void) {
 	}
 	if ((logstr = (char*)malloc(loglen)) == NULL) {
 		perror("Error: Failed to allocate memory for string");
-		addmsg('F', "Failed to allocate memory for string");
+		addmsg('F', strerror(errno));
 		exit(-1);
 	}
 	else {
@@ -133,12 +134,10 @@ int savelog(char* filename) {
 
 	if (headptr == NULL) {
 		perror("Error: Failed to parse log or log is empty");
-		addmsg('F', "Failed to parse log or log is empty");
 		exit(-1);
 	}
 	if (fileptr == NULL) {
 		perror("Error: Failed to create or open log file");
-		addmsg('F', "Failed to create or open log file");
 		exit(-1);
 	}
 	
