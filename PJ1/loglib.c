@@ -1,3 +1,9 @@
+/*
+Hanzhe Huang
+9/13/2021
+loglib.c
+*/
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

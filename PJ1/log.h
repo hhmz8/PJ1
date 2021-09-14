@@ -1,3 +1,9 @@
+/*
+Hanzhe Huang
+9/13/2021
+log.h
+*/
+
 #include <time.h>
 
 typedef struct data_struct {

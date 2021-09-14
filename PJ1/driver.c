@@ -1,4 +1,10 @@
-﻿#include "log.h"
+﻿/*
+Hanzhe Huang
+9/13/2021
+driver.c
+*/
+
+#include "log.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -76,6 +82,8 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
+
+	// Reads messages into log
 	char *ptr = NULL;
 	int bufferLen = 255;
 	char buffer[bufferLen];
@@ -95,7 +103,9 @@ int main(int argc, char** argv) {
 
 	printf("Finished loading input file.\n");
 
+	// Saves log into file
 	savelog(logname);
+
 	//CLEARLOG clearlog();
 	//GETLOG printf("Log string:\n %s\n", getlog());
 
