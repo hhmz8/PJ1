@@ -3,10 +3,19 @@ Hanzhe Huang
 Assignment 1
 
 Description:
-This program logs messages from texts.txt, a pre-made text file containing lines of strings, into a log file.
+This program logs messages from texts.txt, a pre-made text file containing lines of strings, into a log file (by default, messages.log).
 
 Usage:
 ./driver [-h] [-t sec] [logfile]
 
 Files:
 driver.c, log.h, loglib.c, makefile, messages.log, README, texts.txt
+
+References:
+Program 2.7 in the textbook by Robbins & Robbins
+https://stackoverflow.com/questions/3053999/
+https://www.geeksforgeeks.org/generating-random-number-range-c/
+https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html
+
+Git Repository:
+https://github.com/hhmz8/PJ1/tree/master/PJ1

@@ -30,8 +30,8 @@ char* getTypeString(const char type) {
 		return "FATAL";
 		break;
 	case '?':
-		perror("Unrecognized message type");
-		addmsg("F", "Unrecognized message type");
+		perror("Error: Unrecognized message type");
+		addmsg('F', "Unrecognized message type");
 		exit(-1);
 		break;
 	}
@@ -46,9 +46,9 @@ int addmsg(const char type, const char* msg) {
 	nodesize = sizeof(log_t) + strlen(msg) + 1;
 
 	if ((newnode = (log_t*)(malloc(nodesize))) == NULL) {
-		perror("Failed to allocate memory for node");
-		addmsg("F", "Failed to allocate memory for node");
-		exit(-1);
+		perror("Error: Failed to allocate memory for node");
+		addmsg('F', "Failed to allocate memory for node");
+		return -1;
 	}
 
 	newnode->item.time = time(NULL);
@@ -62,12 +62,6 @@ int addmsg(const char type, const char* msg) {
 	else
 		tailptr->next = newnode;
 	tailptr = newnode;
-
-	/* Debug
-	char buffer[40];
-	strftime(buffer, 40, "%H:%M:%S", localtime(&newnode->item.time)); // Reference: https://stackoverflow.com/questions/3053999/
-	printf("Message: %s added at %s \n", msg, buffer);
-	*/
 
 	return 0;
 }
@@ -95,31 +89,39 @@ void clearlog(void) {
 char* getlog(void) {
 	char* logstr;
 	int loglen;
+
+	if (headptr == NULL) {
+		perror("Error: Failed to parse log or log is empty");
+		addmsg('F', "Failed to parse log or log is empty");
+		exit(-1);
+	}
+
 	log_t* navptr = headptr;
 	while (navptr != NULL) {
 		char buffer[40];
-		strftime(buffer, 40, "%H:%M:%S", localtime(&navptr->item.time));
-		loglen += strlen(buffer) + strlen(getTypeString(navptr->item.type)) + strlen(navptr->item.string) + strlen("[] [] ") + 1;
+		strftime(buffer, 40, "%H:%M:%S", localtime(&navptr->item.time)); // Reference: https://stackoverflow.com/questions/3053999/
+		loglen += (strlen(buffer) + strlen(getTypeString(navptr->item.type)) + strlen(navptr->item.string) + strlen("[] [] ") + 1);
 		navptr = navptr->next;
 	}
 	if ((logstr = (char*)malloc(loglen)) == NULL) {
-		perror("Failed to allocate memory for string");
-		addmsg("F", "Failed to allocate memory for string");
+		perror("Error: Failed to allocate memory for string");
+		addmsg('F', "Failed to allocate memory for string");
 		exit(-1);
 	}
 	else {
-		log_t* navptr = headptr;
+		navptr = headptr;
+		char temp[255];
+		char buffer[40];
+		strcpy(logstr, "");
 		while (navptr != NULL) 
 		{
-			char* temp;
-			char buffer[40];
 			strftime(buffer, 40, "%H:%M:%S", localtime(&navptr->item.time));
-			sprintf(temp, "[%s] [%s] %s\n", buffer, getTypeString(navptr->item.type), navptr->item.string);
+			sprintf(temp, "[%s] [%s] %s", buffer, getTypeString(navptr->item.type), navptr->item.string);
 			strcat(logstr, temp);
 			navptr = navptr->next;
 		}
 	}
-	printf("Log retrieved.");
+	
 	return logstr;
 }
 
@@ -130,13 +132,13 @@ int savelog(char* filename) {
 	fileptr = fopen(filename, "w");
 
 	if (headptr == NULL) {
-		perror("Failed to parse log or log is empty");
-		addmsg("F", "Failed to parse log or log is empty");
+		perror("Error: Failed to parse log or log is empty");
+		addmsg('F', "Failed to parse log or log is empty");
 		exit(-1);
 	}
 	if (fileptr == NULL) {
-		perror("Failed to create or open log file");
-		addmsg("F", "Failed to create or open log file");
+		perror("Error: Failed to create or open log file");
+		addmsg('F', "Failed to create or open log file");
 		exit(-1);
 	}
 	
@@ -144,7 +146,6 @@ int savelog(char* filename) {
 		char buffer[40];
 		strftime(buffer, 40, "%H:%M:%S", localtime(&navptr->item.time));
 		fprintf(fileptr, "[%s] [%s] %s", buffer, getTypeString(navptr->item.type), navptr->item.string);
-		printf("[%s] [%s] %s", buffer, getTypeString(navptr->item.type), navptr->item.string);
 		navptr = navptr->next;
 	}
 

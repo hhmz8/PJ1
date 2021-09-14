@@ -5,6 +5,10 @@
 #include <getopt.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <ctype.h> //isprint
+#include <unistd.h> //sleep
+
+extern int errno;
 
 // Reference: https://www.geeksforgeeks.org/generating-random-number-range-c/
 int getRand(const int lower, const int upper)
@@ -15,9 +19,9 @@ int getRand(const int lower, const int upper)
 int main(int argc, char** argv) {
 
 	int option = 0;                         // getopt
-	const char* filename = "texts.txt";     // input messages
-	static char* logname = "messages.log";  // argv
-	static int sleepTime = 1;               // argv
+	const char* filename = "texts.txt";     // input messages, set as empty for debugging
+	static char* logname = "messages.log";  // argv, optional
+	static int sleepTime = 1;               // argv, optional
 
 	// Reference: https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html
 	while ((option = getopt(argc, argv, "ht:")) != -1) {
@@ -38,7 +42,7 @@ int main(int argc, char** argv) {
 
 		case 't':
 			sleepTime = atoi(optarg);
-			if (sleepTime == NULL || sleepTime > 10 || sleepTime < 0) {
+			if (sleepTime > 10 || sleepTime < 0) {
 				perror("Invalid or large sleep duration");
 				return -1;
 			}
@@ -61,26 +65,27 @@ int main(int argc, char** argv) {
 		logname = argv[optind];
 	}
 
-	// TODO: Parse filename
-	// TODO: Remove newline char
-
-
 	// Default
 	FILE* fileptr;
 	fileptr = fopen(filename, "r");
 
 	if (fileptr == NULL) {
-		perror("Failed to open message file");
+		perror("Error: Failed to open message file");
+		addmsg('F', strerror(errno));
+		savelog(logname);
 		return -1;
 	}
 
 	char *ptr = NULL;
-	int bufferLength = 255;
-	char buffer[bufferLength];
+	int bufferLen = 255;
+	char buffer[bufferLen];
 
-	while (fgets(buffer, bufferLength, fileptr)) {
+	while (fgets(buffer, bufferLen, fileptr)) {
 		if ((ptr = (char*)malloc(strlen(buffer) * sizeof(buffer))) == NULL) {
-			perror("Failed to allocate memory for message");
+			fclose(fileptr);
+			perror("Error: Failed to allocate memory for message");
+			addmsg('F', strerror(errno));
+			savelog(logname);
 			return -1;
 		}
 		ptr = buffer;
@@ -88,10 +93,11 @@ int main(int argc, char** argv) {
 		sleep(getRand(0, 2*sleepTime));
 	}
 
-	printf("Finished loading file.\n");
+	printf("Finished loading input file.\n");
 
 	savelog(logname);
-	clearlog();
+	//CLEARLOG clearlog();
+	//GETLOG printf("Log string:\n %s\n", getlog());
 
 	fclose(fileptr);
 	printf("End of program.\n");
