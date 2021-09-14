@@ -48,8 +48,8 @@ int main(int argc, char** argv) {
 
 		case 't':
 			sleepTime = atoi(optarg);
-			if (sleepTime > 10 || sleepTime < 0) {
-				perror("Invalid or large sleep duration");
+			if (sleepTime > 10 || sleepTime < 1) {
+				perror("Invalid or large sleep duration. sec must be between 1-10.");
 				return -1;
 			}
 			break;
